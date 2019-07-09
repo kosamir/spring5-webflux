@@ -1,12 +1,15 @@
 package hr.optimus.spring5.webflux;
 
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
-@SpringBootTest
+//@RunWith(SpringRunner.class)
+//@SpringBootTest
 class Spring5WebfluxApplicationTests {
 
-	@Test
+//	@Test
 	void contextLoads() {
 	}
 
