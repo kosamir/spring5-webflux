@@ -11,6 +11,7 @@ class Spring5WebfluxApplicationTests {
 
 	@Test
 	void contextLoads() {
+		System.out.println("****contextLoads*****");
 	}
 
 }
