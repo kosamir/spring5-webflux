@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Vendor {
 	
+	
 	private String id;
 	
 	private String name;
