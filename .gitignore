@@ -5,6 +5,7 @@ build/
 !**/src/main/**
 !**/src/test/**
 
+
 ### STS ###
 .apt_generated
 .classpath
@@ -13,6 +14,8 @@ build/
 .settings
 .springBeans
 .sts4-cache
+bin/
+logs/*
 
 ### IntelliJ IDEA ###
 .idea
@@ -30,3 +33,4 @@ out/
 
 ### VS Code ###
 .vscode/
+/=app.log
