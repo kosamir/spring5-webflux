@@ -103,7 +103,7 @@ public class CategoryControllerTest {
 				.expectStatus()
 				.isOk()
 				.expectBody(Category.class)
-				.consumeWith(consumer -> assertEquals("cat 1", consumer.getResponseBody().getName()));
+				.consumeWith(consumer -> assertEquals("categorie 1", consumer.getResponseBody().getName()));
 
 	}
 }
