@@ -1,9 +1,15 @@
 package hr.optimus.spring5.webflux.controller;
 
+import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import hr.optimus.spring5.webflux.model.Vendor;
@@ -33,6 +39,18 @@ public class VendorController {
 		return vendorRepository.findById(id);
 	}
 	
+	@ResponseStatus(value = HttpStatus.CREATED)
+	@PostMapping(path = {"","/"," "})
+	public Mono<Void> createVendor(@RequestBody Publisher<Vendor> vendorStream){
+		return vendorRepository.saveAll(vendorStream).then();
+	}
+	
+	
+	@PutMapping(path="/{id}")
+	public Mono<Vendor> updateVendor(@RequestBody Vendor vendor, @PathVariable String id){
+		vendor.setId(id);
+		return vendorRepository.save(vendor).cache();
+	}
 	
 
 }
