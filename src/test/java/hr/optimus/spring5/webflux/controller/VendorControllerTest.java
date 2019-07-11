@@ -2,6 +2,8 @@ package hr.optimus.spring5.webflux.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -17,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.reactivestreams.Publisher;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import hr.optimus.spring5.webflux.model.Category;
 import hr.optimus.spring5.webflux.model.Vendor;
 import hr.optimus.spring5.webflux.repository.VendorRepository;
 import reactor.core.publisher.Flux;
@@ -98,6 +101,8 @@ public class VendorControllerTest {
 				.uri("/api/v1/vendors/1234")
 				.body(toUpdate, Vendor.class)
 				.exchange()
+				.expectStatus()
+				.isOk()
 				.expectBody(Vendor.class)
 				.consumeWith(consumer->assertEquals("vendo1", consumer.getResponseBody().getName()));
 		
@@ -107,5 +112,60 @@ public class VendorControllerTest {
 		
 		
 	}
+	
+	@Test
+	void testPatchCategory() throws Exception {
+		
+		given(vendorRepository.findById(any(String.class))).willReturn(Mono.just(new Vendor("vendor before update", "vendor 1-2")));
+		
+		
+		Mono<Vendor> toUpdate = Mono.just(new Vendor("vendor after update", "vendor 1-1"));
+		
+		BDDMockito.given(vendorRepository.save(any(Vendor.class)))
+				.willReturn(toUpdate);
+		
+		client.patch()
+				.uri("/api/v1/vendors/123")
+				.body(toUpdate, Category.class)
+				.exchange()
+				.expectStatus()
+				.isOk()
+				.expectBody(Category.class)
+				.consumeWith(consumer -> assertEquals("vendor after update", consumer.getResponseBody().getName()));
+		
+		
+		ArgumentCaptor<Vendor> argumentCaptor = ArgumentCaptor.forClass(Vendor.class);
+		verify(vendorRepository, times(1)).save(argumentCaptor.capture());
+		verify(vendorRepository, times(1)).findById(any(String.class));
+
+	}
+	
+	@Test
+	void testPatchVendorNoChanges() throws Exception {
+		
+		given(vendorRepository.findById("123"))
+				.willReturn(Mono.just(new Vendor("vendor1","vendor1-1")));
+
+		Mono<Vendor> toUpdate = Mono.just(new Vendor("vendor1","vendor1-1"));
+		
+
+		
+		client.patch()
+				.uri("/api/v1/vendors/123")
+				.body(toUpdate, Vendor.class)
+				.exchange()
+				.expectStatus()
+				.isOk()
+				.expectBody(Vendor.class)
+				.consumeWith(consumer -> assertEquals("vendor1", consumer.getResponseBody().getName()));
+		
+		
+		ArgumentCaptor<Vendor> argumentCaptor = ArgumentCaptor.forClass(Vendor.class);
+		verify(vendorRepository, never()).save(argumentCaptor.capture());
+		verify(vendorRepository, times(1)).findById("123");
+
+	}
+	
+	
 
 }

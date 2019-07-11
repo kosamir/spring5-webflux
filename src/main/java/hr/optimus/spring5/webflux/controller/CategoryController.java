@@ -4,6 +4,7 @@ import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -55,6 +56,20 @@ public class CategoryController {
 	public Mono<Category> updateCategory(@RequestBody Category category, @PathVariable String id){
 		category.setId(id);
 		return categoryRepository.save(category);
+	}
+	
+	
+	@ResponseStatus(code = HttpStatus.OK)
+	@PatchMapping(path = "/{id}")
+	public Mono<Category> patchCategory(@RequestBody Category category, @PathVariable String id){
+		
+		Category foundCategory = categoryRepository.findById(id).block();
+		
+		if(!foundCategory.equals(category)) {
+			foundCategory.setName(category.getName());
+			return categoryRepository.save(foundCategory);
+		}
+		return Mono.just(foundCategory);
 	}
 	
 	
